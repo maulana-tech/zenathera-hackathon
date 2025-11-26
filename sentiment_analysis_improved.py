@@ -325,6 +325,67 @@ def inset_sentiment_labeling(text, positive_lex, negative_lex, threshold=0.5):
 print("✓ Labeling function ready!")
 
 # ============================================================================
+# 4B. FUNGSI LABELING DENGAN ROBERTA CLASSIFIER
+# ============================================================================
+print("\n" + "=" * 80)
+print("STEP 4B: SETUP ROBERTA LABELING FUNCTION")
+print("=" * 80)
+
+from transformers import pipeline
+
+# Load RoBERTa sentiment classifier
+print("Loading RoBERTa sentiment classifier...")
+try:
+    sentiment_classifier = pipeline(
+        "text-classification",
+        model="w11wo/indonesian-roberta-base-sentiment-classifier"
+    )
+    print("✓ RoBERTa sentiment classifier loaded!")
+except Exception as e:
+    print(f"⚠️ Error loading RoBERTa classifier: {e}")
+    sentiment_classifier = None
+
+def roberta_sentiment_labeling(text, classifier):
+    """
+    Labeling sentimen menggunakan RoBERTa classifier
+    
+    Parameters:
+    - text: teks yang sudah di-preprocessing (atau original text)
+    - classifier: transformers pipeline classifier
+    
+    Returns:
+    - sentiment: 'positive', 'negative', atau 'neutral'
+    - score: confidence score
+    """
+    if not text or len(text.strip()) == 0:
+        return 'neutral', 0.0
+    
+    if classifier is None:
+        return 'neutral', 0.0
+    
+    try:
+        # Predict sentiment
+        result = classifier(text[:512])[0]  # Limit to 512 chars for efficiency
+        
+        # Map label to sentiment
+        label = result['label'].lower()
+        score = result['score']
+        
+        # Model outputs: positive, negative, neutral
+        if 'positive' in label:
+            return 'positive', score
+        elif 'negative' in label:
+            return 'negative', score
+        else:
+            return 'neutral', score
+            
+    except Exception as e:
+        print(f"Error in RoBERTa labeling: {e}")
+        return 'neutral', 0.0
+
+print("✓ RoBERTa labeling function ready!")
+
+# ============================================================================
 # 5. MOUNT GOOGLE DRIVE DAN LOAD DATA
 # ============================================================================
 print("\n" + "=" * 80)
@@ -382,22 +443,40 @@ if len(df_twitter) > 0:
     df_twitter = df_twitter[df_twitter['cleaned_text'].str.len() > 0].reset_index(drop=True)
     
     # Labeling dengan InSet
-    print("Melakukan labeling sentimen...")
-    sentiments = []
-    scores = []
+    print("Melakukan labeling sentimen dengan InSet Lexicon...")
+    sentiments_inset = []
+    scores_inset = []
     for text in df_twitter['cleaned_text']:
         sentiment, score = inset_sentiment_labeling(text, positive_lexicon, negative_lexicon)
-        sentiments.append(sentiment)
-        scores.append(score)
+        sentiments_inset.append(sentiment)
+        scores_inset.append(score)
     
-    df_twitter['sentiment'] = sentiments
-    df_twitter['sentiment_score'] = scores
+    df_twitter['sentiment_inset'] = sentiments_inset
+    df_twitter['sentiment_score_inset'] = scores_inset
+    
+    # Labeling dengan RoBERTa
+    print("Melakukan labeling sentimen dengan RoBERTa Classifier...")
+    sentiments_roberta = []
+    scores_roberta = []
+    for text in df_twitter['text']:  # Use original text for RoBERTa
+        sentiment, score = roberta_sentiment_labeling(text, sentiment_classifier)
+        sentiments_roberta.append(sentiment)
+        scores_roberta.append(score)
+    
+    df_twitter['sentiment_roberta'] = sentiments_roberta
+    df_twitter['sentiment_score_roberta'] = scores_roberta
+    
+    # Default to RoBERTa for main sentiment column
+    df_twitter['sentiment'] = sentiments_roberta
+    df_twitter['sentiment_score'] = scores_roberta
     df_twitter['source'] = 'twitter'
     
     print(f"✓ Twitter preprocessing selesai!")
     print(f"Data setelah cleaning: {len(df_twitter)} baris")
-    print(f"\nDistribusi sentimen Twitter:")
-    print(df_twitter['sentiment'].value_counts())
+    print(f"\nDistribusi sentimen Twitter (InSet Lexicon):")
+    print(df_twitter['sentiment_inset'].value_counts())
+    print(f"\nDistribusi sentimen Twitter (RoBERTa):")
+    print(df_twitter['sentiment_roberta'].value_counts())
 else:
     print("⚠️ Tidak ada data Twitter untuk diproses")
 
@@ -440,22 +519,40 @@ if len(df_tiktok) > 0:
     df_tiktok = df_tiktok[df_tiktok['cleaned_text'].str.len() > 0].reset_index(drop=True)
     
     # Labeling dengan InSet
-    print("Melakukan labeling sentimen...")
-    sentiments = []
-    scores = []
+    print("Melakukan labeling sentimen dengan InSet Lexicon...")
+    sentiments_inset = []
+    scores_inset = []
     for text in df_tiktok['cleaned_text']:
         sentiment, score = inset_sentiment_labeling(text, positive_lexicon, negative_lexicon)
-        sentiments.append(sentiment)
-        scores.append(score)
+        sentiments_inset.append(sentiment)
+        scores_inset.append(score)
     
-    df_tiktok['sentiment'] = sentiments
-    df_tiktok['sentiment_score'] = scores
+    df_tiktok['sentiment_inset'] = sentiments_inset
+    df_tiktok['sentiment_score_inset'] = scores_inset
+    
+    # Labeling dengan RoBERTa
+    print("Melakukan labeling sentimen dengan RoBERTa Classifier...")
+    sentiments_roberta = []
+    scores_roberta = []
+    for text in df_tiktok['text']:  # Use original text for RoBERTa
+        sentiment, score = roberta_sentiment_labeling(text, sentiment_classifier)
+        sentiments_roberta.append(sentiment)
+        scores_roberta.append(score)
+    
+    df_tiktok['sentiment_roberta'] = sentiments_roberta
+    df_tiktok['sentiment_score_roberta'] = scores_roberta
+    
+    # Default to RoBERTa for main sentiment column
+    df_tiktok['sentiment'] = sentiments_roberta
+    df_tiktok['sentiment_score'] = scores_roberta
     df_tiktok['source'] = 'tiktok'
     
     print(f"✓ TikTok preprocessing selesai!")
     print(f"Data setelah cleaning: {len(df_tiktok)} baris")
-    print(f"\nDistribusi sentimen TikTok:")
-    print(df_tiktok['sentiment'].value_counts())
+    print(f"\nDistribusi sentimen TikTok (InSet Lexicon):")
+    print(df_tiktok['sentiment_inset'].value_counts())
+    print(f"\nDistribusi sentimen TikTok (RoBERTa):")
+    print(df_tiktok['sentiment_roberta'].value_counts())
 else:
     print("⚠️ Tidak ada data TikTok untuk diproses")
 
@@ -995,6 +1092,143 @@ for sentiment in ['positive', 'negative', 'neutral']:
     count = (tiktok_data['sentiment'] == sentiment).sum()
     percentage = (count / len(tiktok_data)) * 100 if len(tiktok_data) > 0 else 0
     print(f"   {sentiment.capitalize()}: {count} ({percentage:.2f}%)")
+
+# ============================================================================
+# 16. PERBANDINGAN INSET LEXICON VS ROBERTA LABELING
+# ============================================================================
+print("\n" + "=" * 80)
+print("STEP 16: PERBANDINGAN INSET LEXICON VS ROBERTA LABELING")
+print("=" * 80)
+
+# Combine both Twitter and TikTok for comparison
+df_comparison = pd.concat([df_twitter, df_tiktok], ignore_index=True)
+
+# Calculate agreement between methods
+agreement = (df_comparison['sentiment_inset'] == df_comparison['sentiment_roberta']).sum()
+total = len(df_comparison)
+agreement_percentage = (agreement / total) * 100
+
+print(f"\n📊 PERBANDINGAN METODE LABELING:")
+print(f"Total data: {total}")
+print(f"Agreement: {agreement} ({agreement_percentage:.2f}%)")
+print(f"Disagreement: {total - agreement} ({100 - agreement_percentage:.2f}%)")
+
+# Detailed comparison
+print("\n📈 DISTRIBUSI SENTIMEN PER METODE:")
+print("\nInSet Lexicon:")
+print(df_comparison['sentiment_inset'].value_counts())
+print("\nRoBERTa Classifier:")
+print(df_comparison['sentiment_roberta'].value_counts())
+
+# Visualisasi perbandingan
+fig, axes = plt.subplots(2, 2, figsize=(18, 14))
+
+# 1. Side-by-side comparison - Overall
+inset_counts = df_comparison['sentiment_inset'].value_counts()
+roberta_counts = df_comparison['sentiment_roberta'].value_counts()
+
+sentiments = ['positive', 'negative', 'neutral']
+inset_values = [inset_counts.get(s, 0) for s in sentiments]
+roberta_values = [roberta_counts.get(s, 0) for s in sentiments]
+
+x = np.arange(len(sentiments))
+width = 0.35
+
+bars1 = axes[0, 0].bar(x - width/2, inset_values, width, label='InSet Lexicon', 
+                       color=['#2ecc71', '#e74c3c', '#95a5a6'], alpha=0.8)
+bars2 = axes[0, 0].bar(x + width/2, roberta_values, width, label='RoBERTa', 
+                       color=['#27ae60', '#c0392b', '#7f8c8d'], alpha=0.8)
+
+axes[0, 0].set_xlabel('Sentiment', fontsize=12, fontweight='bold')
+axes[0, 0].set_ylabel('Count', fontsize=12, fontweight='bold')
+axes[0, 0].set_title('Perbandingan Distribusi Sentimen\n(InSet Lexicon vs RoBERTa)', 
+                     fontsize=14, fontweight='bold')
+axes[0, 0].set_xticks(x)
+axes[0, 0].set_xticklabels(sentiments)
+axes[0, 0].legend(fontsize=11)
+axes[0, 0].grid(axis='y', alpha=0.3)
+
+# Add value labels on bars
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        axes[0, 0].text(bar.get_x() + bar.get_width()/2., height,
+                       f'{int(height)}',
+                       ha='center', va='bottom', fontsize=9)
+
+# 2. Confusion Matrix - Agreement between methods
+from sklearn.metrics import confusion_matrix as cm
+
+# Create confusion matrix
+conf_matrix = cm(df_comparison['sentiment_inset'], df_comparison['sentiment_roberta'],
+                 labels=['positive', 'negative', 'neutral'])
+
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='YlOrRd',
+            xticklabels=['Positive', 'Negative', 'Neutral'],
+            yticklabels=['Positive', 'Negative', 'Neutral'],
+            ax=axes[0, 1], cbar_kws={'label': 'Count'})
+axes[0, 1].set_title('Confusion Matrix\n(InSet vs RoBERTa)', fontsize=14, fontweight='bold')
+axes[0, 1].set_ylabel('InSet Lexicon', fontsize=12, fontweight='bold')
+axes[0, 1].set_xlabel('RoBERTa Classifier', fontsize=12, fontweight='bold')
+
+# 3. Agreement pie chart
+agreement_data = [agreement, total - agreement]
+colors_agreement = ['#2ecc71', '#e74c3c']
+explode = (0.05, 0.05)
+
+axes[1, 0].pie(agreement_data, labels=['Agreement', 'Disagreement'],
+               autopct='%1.1f%%', colors=colors_agreement, explode=explode,
+               shadow=True, startangle=90,
+               textprops={'fontsize': 12, 'fontweight': 'bold'})
+axes[1, 0].set_title(f'Agreement antara InSet dan RoBERTa\n({agreement}/{total} samples)',
+                     fontsize=14, fontweight='bold', pad=20)
+
+# 4. Comparison by source (Twitter vs TikTok)
+twitter_comp = df_comparison[df_comparison['source'] == 'twitter']
+tiktok_comp = df_comparison[df_comparison['source'] == 'tiktok']
+
+twitter_agreement = (twitter_comp['sentiment_inset'] == twitter_comp['sentiment_roberta']).sum()
+tiktok_agreement = (tiktok_comp['sentiment_inset'] == tiktok_comp['sentiment_roberta']).sum()
+
+twitter_agreement_pct = (twitter_agreement / len(twitter_comp) * 100) if len(twitter_comp) > 0 else 0
+tiktok_agreement_pct = (tiktok_agreement / len(tiktok_comp) * 100) if len(tiktok_comp) > 0 else 0
+
+sources = ['Twitter', 'TikTok']
+agreement_pcts = [twitter_agreement_pct, tiktok_agreement_pct]
+
+bars = axes[1, 1].bar(sources, agreement_pcts, color=['#1DA1F2', '#000000'], alpha=0.7)
+axes[1, 1].set_ylabel('Agreement (%)', fontsize=12, fontweight='bold')
+axes[1, 1].set_title('Agreement Rate per Source', fontsize=14, fontweight='bold')
+axes[1, 1].set_ylim([0, 100])
+axes[1, 1].grid(axis='y', alpha=0.3)
+
+for bar in bars:
+    height = bar.get_height()
+    axes[1, 1].text(bar.get_x() + bar.get_width()/2., height,
+                   f'{height:.1f}%',
+                   ha='center', va='bottom', fontsize=11, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# Detailed disagreement analysis
+print("\n🔍 ANALISIS DISAGREEMENT:")
+disagreements = df_comparison[df_comparison['sentiment_inset'] != df_comparison['sentiment_roberta']]
+print(f"\nTotal disagreement: {len(disagreements)} samples")
+
+if len(disagreements) > 0:
+    print("\nContoh disagreement (10 pertama):")
+    print(disagreements[['text', 'sentiment_inset', 'sentiment_roberta', 'source']].head(10))
+    
+    print("\nPola disagreement:")
+    disagreement_patterns = disagreements.groupby(['sentiment_inset', 'sentiment_roberta']).size().reset_index(name='count')
+    disagreement_patterns = disagreement_patterns.sort_values('count', ascending=False)
+    print(disagreement_patterns)
+
+# Summary statistics
+print("\n📊 SUMMARY STATISTICS:")
+print(f"\nTwitter Agreement: {twitter_agreement}/{len(twitter_comp)} ({twitter_agreement_pct:.2f}%)")
+print(f"TikTok Agreement: {tiktok_agreement}/{len(tiktok_comp)} ({tiktok_agreement_pct:.2f}%)")
 
 # ============================================================================
 # SUMMARY
