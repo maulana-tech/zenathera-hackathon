@@ -1,0 +1,12 @@
+transformers
+torch
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+wordcloud
+networkx
+indobenchmark-toolkit
+Sastrawi
+accelerate
