@@ -9,49 +9,73 @@
 
 ![Banner](outputs/wordcloud-sentiment.png)
 
-Project ini bertujuan untuk menganalisis sentimen publik terhadap sistem CoreTax DJP menggunakan data dari YouTube, Play Store, dan Media Sosial.
+### Deskripsi Project
+
+Project ini dikembangkan untuk **Hackathon Zenithera** oleh **Kelompok 5**. Tujuan utamanya adalah melakukan analisis mendalam terhadap sentimen publik mengenai implementasi sistem **CoreTax Administration System (CTAS)** oleh Direktorat Jenderal Pajak (DJP).
+
+Kami mengumpulkan data dari berbagai platform digital (**YouTube, Play Store, Twitter/X, dan TikTok**) untuk menangkap persepsi wajib pajak secara komprehensif. Analisis ini tidak hanya mengklasifikasikan sentimen (Positif, Negatif, Netral) menggunakan model Deep Learning (**RoBERTa**), tetapi juga menggali topik permasalahan utama di balik sentimen negatif menggunakan **BERTopic**, serta memberikan rekomendasi berbasis data untuk peningkatan layanan.
+
+### Tech Stack & Tools
+
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Transformers-orange?style=for-the-badge)
+![Scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+
+Project ini dibangun menggunakan teknologi dan library berikut:
+
+*   **Language:** Python 3.8+
+*   **Data Processing:** Pandas, NumPy
+*   **NLP & Machine Learning:**
+    *   **Transformers (Hugging Face):** Menggunakan model `w11wo/indonesian-roberta-base-sentiment-classifier` untuk akurasi tinggi dalam analisis sentimen Bahasa Indonesia.
+    *   **BERTopic:** Untuk topic modeling tingkat lanjut guna menemukan cluster permasalahan.
+    *   **Scikit-learn:** Untuk TF-IDF dan preprocessing tambahan.
+    *   **Sastrawi:** Library khusus untuk stemming Bahasa Indonesia.
+*   **Visualization:** Matplotlib, Seaborn, WordCloud, NetworkX.
+*   **Scraping:** Tweet-Harvest (Node.js/Playwright) untuk pengambilan data Twitter.
 
 ### Struktur Folder
 
 ```
 project/
-├── data/           
-│   ├── processed/  
-│   │   ├── CoreTax Preprocessing Results.csv
-│   │   └── BERTopic-CoreTax-data.csv
-│   ├── Data-Scrape-PlayStore.csv
-│   ├── Data-Scrape-YouTube.csv
-│   ├── Data-Combined-Twitter-Tiktok.csv
-│   ├── kamuskatabaku.xlsx
-│   └── ... (Data lainnya)
-├── notebooks/      -> Jupyter Notebooks untuk analisis dan eksperimen
-│   └── Final_Zenithera_Hackatoon.ipynb
-│   └── Zenithera_Analysis-v1.ipynb
-├── src/            -> Source code utama (Modular)
-│   ├── scraping/       -> Script untuk crawling data
-│   │   └── crawl_twitter.py
-│   ├── main.py             -> Entry point untuk menjalankan seluruh pipeline
-│   ├── config.py           -> Konfigurasi path file
-│   ├── data_loader.py      -> Loading dan merging data
-│   ├── preprocessing.py    -> Cleaning, normalisasi, stemming
-│   ├── sentiment_analysis.py -> Labeling dengan RoBERTa
-│   ├── visualization.py    -> Pembuatan plot dan WordCloud
-│   ├── topic_modeling.py   -> Analisis topik dengan BERTopic
-│   └── verify_integration.py
-├── models/         
-│   └── bertopic_coretax_model/ -> Model BERTopic yang sudah dilatih
-├── outputs/        -> Hasil analisis (plot, visualisasi) dan laporan
-│   ├── distribusi-sentiment-setiap-sumber.png
-│   ├── documents-and-topics.png
-│   ├── hierarchical-clustering.png
-│   ├── intertopic-distance-map.png
-│   ├── sentiment-coretax.png
-│   ├── top-20-TF-IDF-Score.png
-│   ├── topic-word-scores.png
-│   ├── wordcloud-sentiment.png
-│   └── presentation_outline.md
-├── requirements.txt -> Daftar library Python yang dibutuhkan
-└── README.md       -> Dokumentasi project ini
+├── data/                      # Dataset mentah dan hasil proses
+│   ├── processed/             # Data hasil cleaning & preprocessing
+│   │   ├── CoreTax Preprocessing Results.csv     # Output preprocessing
+│   ├── Data-Scrape-PlayStore.csv                 # Raw data Play Store
+│   ├── Data-Scrape-YouTube.csv                   # Raw data YouTube
+│   ├── Data-Combined-Twitter-Tiktok.csv          # Raw data Twitter & TikTok
+│   └── kamuskatabaku.xlsx                        # Kamus normalisasi teks
+│
+├── notebooks/                 # Jupyter Notebooks untuk eksperimen
+│   ├── Final_Zenithera_Hackatoon.ipynb           # Notebook utama (Final)
+│   └── Zenithera_Analysis-v1.ipynb               # Notebook versi awal
+│
+├── src/                       # Source code modular
+│   ├── scraping/              # Script crawling data
+│   │   └── crawl_twitter.py                      # Script crawl Twitter
+│   ├── main.py                # Entry point pipeline
+│   ├── config.py              # Konfigurasi path & konstanta
+│   ├── data_loader.py         # Modul load & merge data
+│   ├── preprocessing.py       # Modul cleaning & stemming
+│   ├── sentiment_analysis.py  # Modul RoBERTa labeling
+│   ├── visualization.py       # Modul plotting & WordCloud
+│   └── topic_modeling.py      # Modul BERTopic analysis
+│
+├── models/                    # Model yang telah dilatih
+│   └── BERTopic-CoreTax-data.csv             # Folder model BERTopic
+│
+├── outputs/                   # Hasil visualisasi & laporan
+│   ├── distribusi-sentiment-setiap-sumber.png    # Plot distribusi sentimen
+│   ├── sentiment-coretax.png                     # Plot total sentimen
+│   ├── wordcloud-sentiment.png                   # Visualisasi WordCloud
+│   ├── intertopic-distance-map.png               # Visualisasi topik
+│   └── ...                                       # File output lainnya
+│
+├── requirements.txt           # Daftar library Python
+└── README.md                  # Dokumentasi project
 ```
 
 ### Cara Menjalankan
