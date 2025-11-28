@@ -12,9 +12,10 @@ project/
 ├── notebooks/      -> Jupyter Notebooks untuk analisis dan eksperimen
 │   └── Hackathon Sentiment Analysis Improved.ipynb
 ├── src/            -> Source code utama dan script utilitas
+│   ├── crawl_twitter.py    -> Script untuk crawling data Twitter
 │   └── verify_integration.py
-├── models/         -> (Optional) Tempat menyimpan model yang sudah dilatih
-├── outputs/        -> Hasil analisis, laporan, dan outline presentasi
+├── models/         -> Tempat menyimpan model IndoBERT yang sudah dilatih
+├── outputs/        -> Hasil analisis (plot, visualisasi) dan laporan
 │   └── presentation_outline.md
 ├── requirements.txt -> Daftar library Python yang dibutuhkan
 └── README.md       -> Dokumentasi project ini
@@ -26,12 +27,26 @@ project/
     ```bash
     pip install -r requirements.txt
     ```
+    *Catatan: Untuk crawling Twitter, pastikan Node.js sudah terinstall karena menggunakan `tweet-harvest`.*
 
-2.  **Jalankan Notebook:**
-    Buka `notebooks/Hackathon Sentiment Analysis Improved.ipynb` menggunakan Jupyter Notebook atau Google Colab.
-    Pastikan path data sudah sesuai (notebook sudah dikonfigurasi untuk mencari data di folder `../data/`).
+2.  **Crawling Data Twitter (Opsional):**
+    Jika ingin mengambil data terbaru dari Twitter:
+    *   Buka `src/crawl_twitter.py` dan update `TWITTER_AUTH_TOKEN` dengan token Anda.
+    *   Jalankan script:
+        ```bash
+        python src/crawl_twitter.py
+        ```
+    *   Data akan otomatis tersimpan di folder `data/`.
 
-3.  **Verifikasi Data:**
+3.  **Jalankan Notebook Analisis:**
+    *   Buka `notebooks/Hackathon Sentiment Analysis Improved.ipynb`.
+    *   Jalankan semua cell. Notebook akan:
+        *   Memuat data dari folder `data/`.
+        *   Melakukan preprocessing dan labeling sentimen.
+        *   Melatih model IndoBERT (disimpan ke `models/`).
+        *   Menghasilkan visualisasi dan rekomendasi (disimpan ke `outputs/`).
+
+4.  **Verifikasi Data:**
     Anda dapat menjalankan script verifikasi untuk mengecek integritas data:
     ```bash
     cd src
