@@ -31,7 +31,9 @@ def setup_page(title="CoreTax Sentiment"):
         layout="wide",
         initial_sidebar_state="expanded"
     )
-    local_css("streamlit_app/style.css")
+    # Load CSS
+    css_path = os.path.join(os.path.dirname(__file__), "style.css")
+    local_css(css_path)
     
     # Sidebar UX Improvements
     with st.sidebar:
