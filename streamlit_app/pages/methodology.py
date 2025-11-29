@@ -2,8 +2,6 @@ import streamlit as st
 from utils import setup_page
 
 def show():
-    setup_page("Methodology")
-
     st.title("Metodologi & Pendekatan Teknis")
     
     st.graphviz_chart("""
@@ -58,4 +56,5 @@ def show():
     st.info("Pendekatan ini memungkinkan kita tidak hanya tahu 'apakah user marah', tapi juga 'kenapa mereka marah'.")
 
 if __name__ == "__main__":
+    setup_page("Methodology")
     show()

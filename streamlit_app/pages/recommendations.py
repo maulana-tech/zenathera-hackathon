@@ -2,8 +2,6 @@ import streamlit as st
 from utils import setup_page, load_data
 
 def show():
-    setup_page("Recommendations")
-
     st.title("Rekomendasi & Tindak Lanjut")
     
     df = load_data()
@@ -62,4 +60,5 @@ def show():
     st.success("💡 **Goal Akhir**: Mengubah sentimen negatif menjadi kepercayaan publik melalui perbaikan yang responsif.")
 
 if __name__ == "__main__":
+    setup_page("Recommendations")
     show()

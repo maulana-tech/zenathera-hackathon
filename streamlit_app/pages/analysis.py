@@ -3,8 +3,6 @@ from utils import load_data, setup_page
 import plotly.express as px
 
 def show():
-    setup_page("Analysis")
-
     st.title("Analisis Mendalam")
     df = load_data()
     
@@ -77,4 +75,5 @@ def show():
             st.warning("Data topik tidak tersedia.")
 
 if __name__ == "__main__":
+    setup_page("Analysis")
     show()

@@ -3,8 +3,6 @@ import streamlit.components.v1 as components
 from utils import load_html_asset, setup_page
 
 def show():
-    setup_page("Visualizations")
-
     st.title("Visualisasi Interaktif (BERTopic)")
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["Topik", "Dokumen", "Hierarki", "Heatmap", "Barchart"])
@@ -81,4 +79,5 @@ def show():
             st.warning("Visualisasi Barchart belum digenerate.")
 
 if __name__ == "__main__":
+    setup_page("Visualizations")
     show()

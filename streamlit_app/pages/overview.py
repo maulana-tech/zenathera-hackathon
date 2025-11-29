@@ -4,8 +4,6 @@ import plotly.express as px
 import os
 
 def show():
-    setup_page("Overview")
-
     st.title("CoreTax Sentiment Overview")
     st.markdown("### Public Perception Dashboard")
     
@@ -121,4 +119,5 @@ def show():
     st.dataframe(df[['source', 'sentiment', 'text']].head(10), use_container_width=True)
 
 if __name__ == "__main__":
+    setup_page("Overview")
     show()
