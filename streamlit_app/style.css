@@ -1,0 +1,197 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --font-family: 'Inter', sans-serif;
+    --primary-color: #6366f1;
+    /* Indigo 500 */
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-color: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+    }
+}
+
+html,
+body,
+[class*="css"] {
+    font-family: var(--font-family);
+    color: var(--text-color);
+}
+
+/* App Background */
+.stApp {
+    background-color: var(--bg-color);
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+    padding-top: 1rem;
+}
+
+[data-testid="stSidebar"] h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Sidebar Expanders */
+[data-testid="stSidebar"] .streamlit-expanderHeader {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+[data-testid="stSidebar"] .streamlit-expanderContent {
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    padding-left: 1rem;
+}
+
+[data-testid="stSidebar"] hr {
+    margin: 1.5rem 0;
+    border-color: var(--border-color);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-color) !important;
+    font-weight: 700 !important;
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    /* xl */
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Metrics */
+.metric-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    color: var(--text-color);
+}
+
+.positive {
+    color: #10b981;
+}
+
+.negative {
+    color: #f43f5e;
+}
+
+.neutral {
+    color: #94a3b8;
+}
+
+.primary {
+    color: var(--primary-color);
+}
+
+/* Streamlit Native Components Styling */
+/* Buttons */
+.stButton>button {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+}
+
+.stButton>button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 3rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    font-weight: 600;
+}
+
+/* Dataframes */
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Hide Streamlit Branding */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}

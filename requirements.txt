@@ -16,3 +16,5 @@ umap-learn
 hdbscan
 nltk
 openpyxl
+streamlit
+plotly
